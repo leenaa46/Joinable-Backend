@@ -2,11 +2,19 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use League\OAuth2\Server\Exception\OAuthServerException;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Exception;
+use App\Traits\ResponseTrait;
 
 class Handler extends ExceptionHandler
 {
+    use ResponseTrait;
+
     /**
      * A list of exception types with their corresponding custom log levels.
      *
@@ -43,8 +51,35 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
+        $this->renderable(function (Exception $e, $request) {
+            /************ *************/
+
+            if ($e instanceof OAuthServerException) {
+                return $this->error($e->getHint(), $e->getHttpStatusCode());
+            }
+
+            if ($e instanceof NotFoundHttpException) {
+                if ($e->getMessage())
+                    return $this->error($e->getMessage(), $e->getStatusCode());
+                return $this->error(__('fail.route_not_found'), $e->getStatusCode());
+            }
+
+            if ($e instanceof AccessDeniedHttpException) {
+                return $this->error(__('fail.no_permission'), $e->getStatusCode());
+            }
+
+            if ($e instanceof HttpException) {
+                return $this->error($e->getMessage(), $e->getStatusCode());
+            }
+        });
+
         $this->reportable(function (Throwable $e) {
-            //
+            if ($e instanceof HttpException) {
+                return $this->error($e->getMessage(), $e->getStatusCode());
+            }
+            if ($e instanceof \Exception) {
+                throw $e;
+            }
         });
     }
 }
