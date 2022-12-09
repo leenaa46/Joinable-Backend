@@ -14,6 +14,7 @@ class CompanyService extends BaseService
     use CompanyValidate;
 
     protected $model;
+    protected static $COMMON_RELATIONSHIP = [];
 
     public function __construct(Company $company)
     {
@@ -63,5 +64,31 @@ class CompanyService extends BaseService
         return $this->model->where('joinable_code', $str)->first()
             ? $this->getNewId()
             : $str;
+    }
+
+    /**
+     * Get By Model
+     * 
+     * @param Company $company
+     * 
+     * @return Company
+     */
+    public function getByModel(Company $company)
+    {
+        return $company->load(self::$COMMON_RELATIONSHIP);
+    }
+
+    /**
+     * Get By Joinable Code
+     * 
+     * @param string $joinableCode
+     * 
+     * @return Company
+     */
+    public function getByCode($joinableCode)
+    {
+        $company = $this->model->where('joinable_code', $joinableCode)->firstOrFail();
+
+        return $company;
     }
 }

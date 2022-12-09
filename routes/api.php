@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\AuthController;
 
 Route::group(['middleware' => []], function () {
@@ -24,4 +25,6 @@ Route::group(['middleware' => []], function () {
             );
         }
     );
+
+    Route::get('company-code/{joinableCode}', [CompanyController::class, 'getByCode']);
 });

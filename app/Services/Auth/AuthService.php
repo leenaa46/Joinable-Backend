@@ -9,6 +9,7 @@ use App\Services\Company\CompanyService;
 use App\Services\BaseService;
 use App\Services\Auth\Validations\UserValidate;
 use App\Models\User;
+use App\Models\Company;
 
 class AuthService extends BaseService
 {
@@ -22,6 +23,12 @@ class AuthService extends BaseService
         $this->model = $user;
     }
 
+    /**
+     * Login
+     * 
+     * @param Request $request
+     * @return function getPersonalAccessToken()
+     */
     public function login(Request $request)
     {
         $this->validateLogin($request);
@@ -41,6 +48,11 @@ class AuthService extends BaseService
         return $this->getPersonalAccessToken();
     }
 
+    /**
+     * Get Personal AccessToken
+     * 
+     * @return function auth()->user()->createToken()
+     */
     public function getPersonalAccessToken()
     {
         if (request()->remember_me === 'true')
@@ -49,11 +61,24 @@ class AuthService extends BaseService
         return auth()->user()->createToken('Personal Access Token');
     }
 
+    /**
+     * Destroy Token
+     * 
+     * @return function auth()->user()->token()->revoke()
+     */
     public function logout()
     {
         return auth()->user()->token()->revoke();
     }
 
+    /**
+     * Register
+     * 
+     * @param Request $request
+     * @param Boolean $withRelation = true
+     * 
+     * @return User
+     */
     public function register(Request $request, $withRelation = true)
     {
         $this->validateRegister($request);
@@ -83,22 +108,23 @@ class AuthService extends BaseService
         }
     }
 
-    public function update(Request $request, User $user, $withRelation = true)
-    {
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->save();
-
-        return $withRelation
-            ? $this->getByModel($user)
-            : $user;
-    }
-
+    /**
+     * Get Auth User
+     * 
+     * @return User
+     */
     public function me()
     {
         return $this->getByModel(\auth()->user());
     }
 
+    /**
+     * Register For Company
+     * 
+     * @param Request $request
+     * 
+     * @return User
+     */
     public function registerCompany(Request $request)
     {
         DB::beginTransaction();
@@ -119,6 +145,40 @@ class AuthService extends BaseService
         }
     }
 
+    /**
+     * Register For App
+     * 
+     * @param Request $request
+     * 
+     * @return User
+     */
+    public function registerApp(Request $request)
+    {
+        $existCompany = Company::where('id', $request->company_id)->where('joinable_code', $request->joinable_code)->first();
+        if (!$existCompany) \abort(400, __('fail.invalid_jonable_code'));
+
+        DB::beginTransaction();
+
+        try {
+            $request->merge(['role' => 'employee']);
+            $user = $this->register($request, \false);
+
+            DB::commit();
+
+            return $this->getByModel($user);;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+    }
+
+    /**
+     * Get User With Common Relationship
+     * 
+     * @param User $user
+     * 
+     * @return User
+     */
     public function getByModel(User $user)
     {
         return $user->load(self::$COMMON_RELATIONSHIP);

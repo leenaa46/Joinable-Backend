@@ -29,7 +29,7 @@ class AuthController extends Controller
 
     public function register()
     {
-        $res = $this->service->register(request());
+        $res = $this->service->registerApp(request());
         return $this->success($res, __('success.register'));
     }
 
