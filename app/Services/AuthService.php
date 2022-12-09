@@ -3,10 +3,11 @@
 namespace App\Services;
 
 use Laravel\Passport\Passport;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\User;
 
-class AuthService
+class AuthService extends BaseService
 {
     protected $model;
 
@@ -43,5 +44,41 @@ class AuthService
     public function logout()
     {
         return auth()->user()->token()->revoke();
+    }
+
+    public function register(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $user = $this->model->newInstance();
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->password = \bcrypt($request->password);
+            $user->save();
+
+            if ($request->image_profile)
+                $this->addFileToModel($request->image_profile, $user, $user->image_profile_collection_name);
+
+            DB::commit();
+
+            return $user;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+    }
+
+    public function update(Request $request, User $user)
+    {
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->save();
+
+        return $user;
+    }
+
+    public function me()
+    {
+        return \auth()->user();
     }
 }

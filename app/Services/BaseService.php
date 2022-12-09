@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
+use App\Traits\ImageTrait;
 use App\Http\Resources\PaginateCollection;
 
 class BaseService
 {
-    protected static $COMMON_RELATIONSHIP = [];
-
+    use ImageTrait;
 
     public function formatQuery($query, $filterBy = [], $columnsSearch = [])
     {

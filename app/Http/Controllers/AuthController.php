@@ -26,4 +26,16 @@ class AuthController extends Controller
         $res = $this->service->logout();
         return $this->success($res, __('success.logout'));
     }
+
+    public function register()
+    {
+        $res = $this->service->register(request());
+        return $this->success($res, __('success.register'));
+    }
+
+    public function me()
+    {
+        $res = $this->service->me();
+        return $this->success($res, __('success.get_data'));
+    }
 }
