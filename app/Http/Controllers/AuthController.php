@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Services\AuthService;
+use App\Services\Auth\AuthService;
 use App\Http\Controllers\Controller;
 
 class AuthController extends Controller
@@ -37,5 +37,11 @@ class AuthController extends Controller
     {
         $res = $this->service->me();
         return $this->success($res, __('success.get_data'));
+    }
+
+    public function registerCompany()
+    {
+        $res = $this->service->registerCompany(request());
+        return $this->success($res, __('success.register'));
     }
 }

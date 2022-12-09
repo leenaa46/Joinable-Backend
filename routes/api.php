@@ -11,6 +11,7 @@ Route::group(['middleware' => []], function () {
         function () {
             Route::post('login', [AuthController::class, 'login']);
             Route::post('register', [AuthController::class, 'register']);
+            Route::post('register-company', [AuthController::class, 'registerCompany']);
 
             Route::group(
                 [
