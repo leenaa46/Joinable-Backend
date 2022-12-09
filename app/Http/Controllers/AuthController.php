@@ -18,6 +18,12 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $res = $this->service->login($request);
-        return \response()->json($res);
+        return $this->token($res);
+    }
+
+    public function logout()
+    {
+        $res = $this->service->logout();
+        return $this->success($res, __('success.logout'));
     }
 }

@@ -39,4 +39,9 @@ class AuthService
 
         return auth()->user()->createToken('Personal Access Token');
     }
+
+    public function logout()
+    {
+        return auth()->user()->token()->revoke();
+    }
 }
