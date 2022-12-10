@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\VariableController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\AuthController;
 
@@ -27,4 +28,13 @@ Route::group(['middleware' => []], function () {
     );
 
     Route::get('company-code/{joinableCode}', [CompanyController::class, 'getByCode']);
+
+    Route::group(
+        [
+            'middleware' => 'auth:api'
+        ],
+        function () {
+            Route::apiResource('variable', VariableController::class)->except('update', 'destroy');
+        }
+    );
 });

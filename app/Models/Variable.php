@@ -17,4 +17,15 @@ class Variable extends BaseModel
         return $this->morphOne(config('media-library.media_model'), 'model')
             ->where('collection_name', $this->image_logo_collection_name);
     }
+
+    /**
+     * Scope Active Company
+     */
+    public function scopeActiveCompany($query)
+    {
+        return $query->where(function ($query) {
+            $query->whereNull('company_id')
+                ->orWhere('company_id', \auth()->user()->company_id);
+        });
+    }
 }
