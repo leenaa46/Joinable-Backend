@@ -22,6 +22,18 @@ class PersonalService extends BaseService
     }
 
     /**
+     * Get All Personal In Company
+     * 
+     * @return Collection || PaginateCollection
+     */
+    public function all()
+    {
+        $personals = $this->model->query()->activeCompany();
+
+        return $this->formatQuery($personals, ['name'], ['gender']);
+    }
+
+    /**
      * Create a new Personal
      * 
      * @param Request $request
@@ -114,10 +126,10 @@ class PersonalService extends BaseService
     {
         DB::beginTransaction();
 
-        $this->validateSave($request);
+        $this->validateUpdate($request);
 
         try {
-            $personal->name = $request->name;
+            $personal->name = $request->name ?: $personal->name;
             $personal->gender = $request->gender;
             $personal->gender_description = $request->gender_description;
             $personal->joined_at = $request->joined_at;
