@@ -6,6 +6,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Services\Post\Validations\PostValidate;
+use App\Services\Post\PostContentService;
 use App\Services\BaseService;
 use App\Models\Post;
 
@@ -56,6 +57,25 @@ class PostService extends BaseService
     }
 
     /**
+     * Save Post Content In Company
+     * 
+     * @return Collection || PaginateCollection
+     */
+    public function saveContent()
+    {
+        $post = $this->model->query()->activeCompany()->where('type', 'company_content')->first();
+
+        $postContentService = \resolve(PostContentService::class);
+
+        $request = \request();
+        $request->merge([
+            'post_id' => $post->id,
+            "order" => $post->post_contents()->count() + 1
+        ]);
+        return $postContentService->create($request);
+    }
+
+    /**
      * Create a new Post
      * 
      * @param Request $request
@@ -99,75 +119,5 @@ class PostService extends BaseService
     public function getByModel(Post $post)
     {
         return $post->load(self::$COMMON_RELATIONSHIP);
-    }
-
-    /**
-     * Give Post Variables
-     * 
-     * @param Request $request
-     * @param Post $post
-     * @param Boolean $withRelation = true
-     * 
-     * @return Post
-     */
-    public function givePostVariables(Request $request, Post $post, $withRelation = true)
-    {
-        DB::beginTransaction();
-        $this->validateVariable($request);
-
-        try {
-            switch ($request->action) {
-                case "add":
-                    $post->variables()->syncWithoutDetaching($request->variables);
-                    break;
-                case "remove":
-                    $post->variables()->detach($request->variables);
-                    break;
-            }
-
-            DB::commit();
-
-            return $withRelation
-                ? $this->getByModel($post)
-                : $post;
-        } catch (\Throwable $th) {
-            DB::rollBack();
-            throw $th;
-        }
-    }
-
-    /**
-     * Update a new Post
-     * 
-     * @param Request $request
-     * @param Post $post
-     * 
-     * @return Post
-     */
-    public function update(Request $request, Post $post)
-    {
-        DB::beginTransaction();
-
-        $this->validateUpdate($request);
-
-        try {
-            $post->name = $request->name ?: $post->name;
-            $post->gender = $request->gender;
-            $post->gender_description = $request->gender_description;
-            $post->joined_at = $request->joined_at;
-            $post->introduce_message = $request->introduce_message;
-            $post->save();
-
-            if ($request->image_profile) {
-                $post->clearMediaCollection($post->image_profile_collection_name);
-                $this->addFileToModel($request->image_profile, $post, $post->image_profile_collection_name);
-            }
-
-            DB::commit();
-            return $post;
-        } catch (\Throwable $th) {
-            DB::rollBack();
-            throw $th;
-        }
     }
 }

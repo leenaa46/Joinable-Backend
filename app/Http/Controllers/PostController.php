@@ -21,4 +21,10 @@ class PostController extends Controller
         $res = $this->service->getContent();
         return $this->success($res, __('success.get_data'));
     }
+
+    public function saveCompanyContent()
+    {
+        $res = $this->service->saveContent();
+        return $this->success($res, __('success.save_data'));
+    }
 }

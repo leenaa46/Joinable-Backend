@@ -60,6 +60,7 @@ Route::group(['middleware' => []], function () {
                 ],
                 function () {
                     Route::post('company', [CompanyController::class, 'update']);
+                    Route::post('company-content', [PostController::class, 'saveCompanyContent']);
                 }
             );
         }

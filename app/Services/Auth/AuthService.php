@@ -144,7 +144,8 @@ class AuthService extends BaseService
                 "type" => "company_content",
                 "title" => 'default',
                 "body" => "default",
-                "created_by" => $user->id
+                "created_by" => $user->id,
+                "is_published" => \true
             ]));
 
             DB::commit();
