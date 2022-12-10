@@ -55,4 +55,12 @@ class Personal extends BaseModel
     {
         return $this->belongsToMany(Variable::class)->where('type', 'career');
     }
+
+    /**
+     * The posts that belong to the personal.
+     */
+    public function posts()
+    {
+        return $this->belongsToMany(Post::class);
+    }
 }

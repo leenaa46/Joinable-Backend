@@ -14,7 +14,7 @@ class PostService extends BaseService
     use PostValidate;
 
     protected $model;
-    protected static $COMMON_RELATIONSHIP = ['activities'];
+    protected static $COMMON_RELATIONSHIP = ['activities', 'personals'];
 
     public function __construct(Post $post)
     {
@@ -30,7 +30,8 @@ class PostService extends BaseService
     {
         $posts = $this->model->query()
             ->activeCompany()
-            ->with(self::$COMMON_RELATIONSHIP);
+            ->with(self::$COMMON_RELATIONSHIP)
+            ->withCount('personals');
 
         // Hide post with post_content type from all users
         $posts->where('type', '!=', 'post_content');
@@ -119,7 +120,8 @@ class PostService extends BaseService
      */
     public function getByModel(Post $post)
     {
-        return $post->load(self::$COMMON_RELATIONSHIP);
+        return $post->load(self::$COMMON_RELATIONSHIP)
+            ->loadCount('personals');
     }
 
     /**
@@ -166,5 +168,17 @@ class PostService extends BaseService
             DB::rollback();
             throw $th;
         }
+    }
+
+    /**
+     * Personal Join Event
+     * 
+     * @param Post $post
+     * 
+     * @return Post
+     */
+    public function personalJoinEvent(Post $post)
+    {
+        return $post->personals()->syncWithoutDetaching(\auth()->user()->personal->id);
     }
 }

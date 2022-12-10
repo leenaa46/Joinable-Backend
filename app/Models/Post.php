@@ -44,4 +44,12 @@ class Post extends BaseModel
     {
         return $this->belongsToMany(Variable::class)->where('type', 'activity');
     }
+
+    /**
+     * The personals that belong to the post.
+     */
+    public function personals()
+    {
+        return $this->belongsToMany(Personal::class);
+    }
 }

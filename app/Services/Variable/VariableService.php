@@ -14,7 +14,7 @@ class VariableService extends BaseService
     use VariableValidate;
 
     protected $model;
-    protected static $COMMON_RELATIONSHIP = ['personals_active'];
+    protected static $COMMON_RELATIONSHIP = ['personals_active', 'posts'];
 
     public function __construct(Variable $variable)
     {

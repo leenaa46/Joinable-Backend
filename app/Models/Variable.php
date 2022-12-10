@@ -44,6 +44,6 @@ class Variable extends BaseModel
      */
     public function posts()
     {
-        $this->belongsTo(Post::class);
+        return $this->belongsToMany(Post::class);
     }
 }

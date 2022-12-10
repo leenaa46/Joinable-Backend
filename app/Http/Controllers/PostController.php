@@ -65,4 +65,10 @@ class PostController extends Controller
         $res = $this->service->createEvent($request);
         return $this->success($res, __('success.save_data'));
     }
+
+    public function joinEvent(Post $post)
+    {
+        $res = $this->service->personalJoinEvent($post);
+        return $this->success($res, __('success.save_data'));
+    }
 }
