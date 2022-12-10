@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VariableController;
 use App\Http\Controllers\PersonalController;
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\AuthController;
 
@@ -36,6 +37,8 @@ Route::group(['middleware' => []], function () {
         ],
         function () {
             Route::apiResource('variable', VariableController::class)->except('update', 'destroy');
+            Route::get('company', [CompanyController::class, 'getMyInfo']);
+            Route::delete('image/{uuid}', [ImageController::class, 'destroy']);
 
             Route::group(
                 [
@@ -45,6 +48,15 @@ Route::group(['middleware' => []], function () {
                     Route::get('personal-info', [PersonalController::class, 'getMyInfo']);
                     Route::post('personal-variable', [PersonalController::class, 'giveVariable']);
                     Route::post('personal', [PersonalController::class, 'updateMyInfo']);
+                }
+            );
+
+            Route::group(
+                [
+                    'middleware' => 'role:admin'
+                ],
+                function () {
+                    Route::post('company', [CompanyController::class, 'update']);
                 }
             );
         }

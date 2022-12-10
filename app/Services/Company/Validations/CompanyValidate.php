@@ -21,7 +21,9 @@ trait CompanyValidate
         $request->validate([
             "name" => "required|max:191|unique:companies,name,$company->id,id",
             "slogan" => "nullable|max:191",
-            "image_profile" => "nullable|mimes:jpg,png,jpeg|max:20480"
+            "image_profile" => "nullable|mimes:jpg,png,jpeg|max:20480",
+            "image_galleries" => "nullable|array",
+            "image_galleries.*" => "nullable|mimes:jpg,png,jpeg|max:20480",
         ]);
     }
 }

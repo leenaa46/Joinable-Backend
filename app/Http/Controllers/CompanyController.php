@@ -20,4 +20,16 @@ class CompanyController extends Controller
         $res = $this->service->getByCode($joinableCode);
         return $this->success($res, __('success.get_data'));
     }
+
+    public function getMyInfo()
+    {
+        $res = $this->service->getByModel(\auth()->user()->company);
+        return $this->success($res, __('success.get_data'));
+    }
+
+    public function update()
+    {
+        $res = $this->service->update(request(), \auth()->user()->company);
+        return $this->success($res, __('success.update_data'));
+    }
 }
