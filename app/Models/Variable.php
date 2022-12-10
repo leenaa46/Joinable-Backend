@@ -38,4 +38,12 @@ class Variable extends BaseModel
     {
         return $this->personals()->whereRelation('user', 'company_id', \auth()->user()->company_id);
     }
+
+    /**
+     * The posts that belong to the activity.
+     */
+    public function posts()
+    {
+        $this->belongsTo(Post::class);
+    }
 }

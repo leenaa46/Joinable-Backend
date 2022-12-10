@@ -53,4 +53,16 @@ class PostController extends Controller
         $res = $this->service->switchPublished($post);
         return $this->success($res, __('success.update_data'));
     }
+
+    public function createEvent()
+    {
+        $request = \request();
+        // Add auth user as created_by 
+        $request->merge([
+            'created_by' => \auth()->user()->id,
+        ]);
+
+        $res = $this->service->createEvent($request);
+        return $this->success($res, __('success.save_data'));
+    }
 }

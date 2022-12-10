@@ -36,4 +36,12 @@ class Post extends BaseModel
     {
         return $this->belongsTo(User::class, 'created_by', 'id');
     }
+
+    /**
+     * The activities that belong to the post.
+     */
+    public function activities()
+    {
+        return $this->belongsToMany(Variable::class)->where('type', 'activity');
+    }
 }

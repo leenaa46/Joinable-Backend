@@ -11,7 +11,7 @@ trait PostValidate
         $request->validate([
             "created_by" => "required|exists:users,id",
             "title" => "required|max:191",
-            "type" => "required|in:faq,event,feedback",
+            "type" => "required|in:faq,event,feedback,company_content",
             "body" => "nullable",
             "image_title" => "nullable|mimes:jpg,png,jpeg|max:20480",
         ]);
@@ -23,6 +23,15 @@ trait PostValidate
             "title" => "required|max:191",
             "body" => "nullable",
             "image_title" => "nullable|mimes:jpg,png,jpeg|max:20480",
+        ]);
+    }
+
+    public function validateSaveEvent(Request $request)
+    {
+        $request->validate([
+            "activities" => "nullable|array",
+            "activities.*" => "nullable|exists:variables,id,type,activity,deleted_at,NULL",
+            "schedule" => "required|date|after_or_equal:" . date('Y-m-d H:i:s')
         ]);
     }
 }

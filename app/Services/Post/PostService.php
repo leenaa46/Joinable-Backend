@@ -14,7 +14,7 @@ class PostService extends BaseService
     use PostValidate;
 
     protected $model;
-    protected static $COMMON_RELATIONSHIP = [];
+    protected static $COMMON_RELATIONSHIP = ['activities'];
 
     public function __construct(Post $post)
     {
@@ -28,7 +28,9 @@ class PostService extends BaseService
      */
     public function all()
     {
-        $posts = $this->model->query()->activeCompany();
+        $posts = $this->model->query()
+            ->activeCompany()
+            ->with(self::$COMMON_RELATIONSHIP);
 
         // Hide post with post_content type from all users
         $posts->where('type', '!=', 'post_content');
@@ -78,7 +80,7 @@ class PostService extends BaseService
      * 
      * @return Post
      */
-    public function create(Request $request)
+    public function create(Request $request, $withRelation = \true)
     {
         DB::beginTransaction();
 
@@ -98,7 +100,10 @@ class PostService extends BaseService
                 $this->addFileToModel($request->image_title, $post, $post->image_title_collection_name);
 
             DB::commit();
-            return $post;
+
+            return $withRelation
+                ? $this->getByModel($post)
+                : $post;
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
@@ -130,5 +135,36 @@ class PostService extends BaseService
         $post->save();
 
         return $post;
+    }
+
+    /**
+     * Create new Event
+     * 
+     * @param Request $request
+     * 
+     * @return Function create()
+     */
+    public function createEvent(Request $request)
+    {
+        $request->merge([
+            "type" => "event",
+            "is_published" => true
+        ]);
+
+        DB::beginTransaction();
+
+        $this->validateSaveEvent($request);
+
+        try {
+            $post = $this->create($request, \false);
+            // In case the event has associated activities
+            $post->activities()->attach($request->activities);
+
+            DB::commit();
+            return $this->getByModel($post);
+        } catch (\Throwable $th) {
+            DB::rollback();
+            throw $th;
+        }
     }
 }
