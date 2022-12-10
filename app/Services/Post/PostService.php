@@ -49,15 +49,10 @@ class PostService extends BaseService
      */
     public function getContent()
     {
-        $posts = $this->model->query()->activeCompany();
+        $post = $this->model->query()->activeCompany()->where('type', 'company_content')->first();
+        $postContents = $post->post_contents();
 
-        switch (request()->type) {
-            case 'company_content':
-                $posts->with(['image_title', 'post_contents']);
-                break;
-        }
-
-        return $this->formatQuery($posts, ['title'], 'faq');
+        return $this->formatQuery($postContents, ['title']);
     }
 
     /**

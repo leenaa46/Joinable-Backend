@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VariableController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\PersonalController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\CompanyController;
@@ -40,6 +41,7 @@ Route::group(['middleware' => []], function () {
             Route::get('personal', [PersonalController::class, 'index']);
             Route::get('company', [CompanyController::class, 'getMyInfo']);
             Route::delete('image/{uuid}', [ImageController::class, 'destroy']);
+            Route::get('company-content', [PostController::class, 'getCompanyContent']);
 
             Route::group(
                 [

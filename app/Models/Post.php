@@ -24,7 +24,7 @@ class Post extends BaseModel
      */
     public function scopeActiveCompany($query)
     {
-        return $query->whereRelation('created_by', 'company_id', \auth()->company_id);
+        return $query->whereRelation('created_by', 'company_id', \auth()->user()->company_id);
     }
 
     public function post_contents()
