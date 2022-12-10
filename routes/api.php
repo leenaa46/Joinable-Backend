@@ -55,6 +55,7 @@ Route::group(['middleware' => []], function () {
                     Route::post('personal', [PersonalController::class, 'updateMyInfo']);
                     Route::post('event/{post}', [PostController::class, 'joinEvent']);
                     Route::post('cancel-event/{post}', [PostController::class, 'cancelToJoinEvent']);
+                    Route::post('feedback', [PostController::class, 'createFeedback']);
                 }
             );
 

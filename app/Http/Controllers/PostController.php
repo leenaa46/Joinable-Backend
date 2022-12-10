@@ -77,4 +77,17 @@ class PostController extends Controller
         $res = $this->service->personalCancelToJoinEvent($post);
         return $this->success($res, __('success.save_data'));
     }
+
+    public function createFeedback()
+    {
+        $request = \request();
+
+        // Add auth user as created_by 
+        $request->merge([
+            'created_by' => \auth()->user()->id,
+        ]);
+
+        $res = $this->service->createFeedback($request);
+        return $this->success($res, __('success.save_data'));
+    }
 }

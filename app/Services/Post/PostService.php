@@ -193,4 +193,25 @@ class PostService extends BaseService
     {
         return $post->personals()->detach(\auth()->user()->personal->id);
     }
+
+    /** 
+     * Create Feedback
+     * 
+     * @return Post
+     */
+    public function createFeedback(Request $request)
+    {
+        $request->merge(['type' => 'feedback']);
+
+        $this->validateSaveFeedback($request);
+
+        try {
+            $post = $this->create($request);
+            $post->feedback_statuses()->attach($request->feedback_status_id);
+
+            return $post->load('feedback_statuses');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 }

@@ -34,4 +34,11 @@ trait PostValidate
             "schedule" => "required|date|after_or_equal:" . date('Y-m-d H:i:s')
         ]);
     }
+
+    public function validateSaveFeedback(Request $request)
+    {
+        $request->validate([
+            "feedback_status_id" => "required|exists:variables,id,type,feedback_status,deleted_at,NULL",
+        ]);
+    }
 }

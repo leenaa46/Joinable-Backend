@@ -46,6 +46,14 @@ class Post extends BaseModel
     }
 
     /**
+     * The feedback_statuses that belong to the post.
+     */
+    public function feedback_statuses()
+    {
+        return $this->belongsToMany(Variable::class)->where('type', 'feedback_status');
+    }
+
+    /**
      * The personals that belong to the post.
      */
     public function personals()
