@@ -31,6 +31,33 @@ class PersonalService extends BaseService
         $personals = $this->model->query()->activeCompany()
             ->with(self::$COMMON_RELATIONSHIP);
 
+        // Hide self when from app
+        if (\auth()->user()->personal) $personals->where('id', '!=', \auth()->user()->personal->id);
+
+        if (\request()->scope_recommend) {
+            switch (\request()->scope_recommend) {
+                case 'career':
+                    $personals->whereHas('careers', function ($query) {
+                        $query->whereIn('id', \auth()->user()->personal->careers->pluck('id')->toArray());
+                    });
+                    break;
+                case 'activity':
+                    $personals->whereHas('activities', function ($query) {
+                        $query->whereIn('id', \auth()->user()->personal->activities->pluck('id')->toArray());
+                    });
+                    break;
+                case 'all':
+                    $personals->where(function ($query) {
+                        $query->whereHas('activities', function ($query) {
+                            $query->whereIn('id', \auth()->user()->personal->activities->pluck('id')->toArray());
+                        })->orWhereHas('careers', function ($query) {
+                            $query->whereIn('id', \auth()->user()->personal->careers->pluck('id')->toArray());
+                        });
+                    });
+                    break;
+            }
+        }
+
         return $this->formatQuery($personals, ['name'], ['gender']);
     }
 
