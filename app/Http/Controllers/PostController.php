@@ -27,4 +27,30 @@ class PostController extends Controller
         $res = $this->service->saveContent();
         return $this->success($res, __('success.save_data'));
     }
+
+    public function store()
+    {
+        $request = \request();
+
+        // Add auth user as created_by 
+        $request->merge([
+            'created_by' => \auth()->user()->id,
+            "is_published" => true
+        ]);
+
+        $res = $this->service->create($request);
+        return $this->success($res, __('success.save_data'));
+    }
+
+    public function index()
+    {
+        $res = $this->service->all();
+        return $this->success($res, __('success.get_data'));
+    }
+
+    public function switchPostPublishedStatus(Post $post)
+    {
+        $res = $this->service->switchPublished($post);
+        return $this->success($res, __('success.update_data'));
+    }
 }

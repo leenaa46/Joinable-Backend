@@ -42,6 +42,7 @@ Route::group(['middleware' => []], function () {
             Route::get('company', [CompanyController::class, 'getMyInfo']);
             Route::delete('image/{uuid}', [ImageController::class, 'destroy']);
             Route::get('company-content', [PostController::class, 'getCompanyContent']);
+            Route::get('post', [PostController::class, 'index']);
 
             Route::group(
                 [
@@ -61,6 +62,8 @@ Route::group(['middleware' => []], function () {
                 function () {
                     Route::post('company', [CompanyController::class, 'update']);
                     Route::post('company-content', [PostController::class, 'saveCompanyContent']);
+                    Route::post('post', [PostController::class, 'store']);
+                    Route::post('post-published/{post}', [PostController::class, 'switchPostPublishedStatus']);
                 }
             );
         }

@@ -44,7 +44,7 @@ class BaseService
         return $query;
     }
 
-    public function searchCollumn($query, $columnsSearch)
+    public function searchCollumn($query, array $columnsSearch)
     {
         foreach ($columnsSearch as $column) {
             if (request()->has($column) && isset(request()->$column)) {

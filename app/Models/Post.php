@@ -32,11 +32,6 @@ class Post extends BaseModel
         return $this->hasMany(PostContent::class);
     }
 
-    public function answer()
-    {
-        return $this->hasOne(PostContent::class);
-    }
-
     public function created_by()
     {
         return $this->belongsTo(User::class, 'created_by', 'id');

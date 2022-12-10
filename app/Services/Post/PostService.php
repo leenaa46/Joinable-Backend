@@ -32,15 +32,12 @@ class PostService extends BaseService
         $posts = $this->model->query()->activeCompany();
 
         switch (request()->type) {
-            case 'faq':
-                $posts->with('answer');
-                break;
             case 'company_content':
                 $posts->with(['image_title', 'post_contents']);
                 break;
         }
 
-        return $this->formatQuery($posts, ['title'], 'faq');
+        return $this->formatQuery($posts, ['title'], ['type']);
     }
 
     /**
@@ -119,5 +116,20 @@ class PostService extends BaseService
     public function getByModel(Post $post)
     {
         return $post->load(self::$COMMON_RELATIONSHIP);
+    }
+
+    /**
+     * Switch Post published status
+     * 
+     * @param Post $post
+     * 
+     * @return Post
+     */
+    public function switchPublished(Post $post)
+    {
+        $post->is_published = !$post->is_published;
+        $post->save();
+
+        return $post;
     }
 }
