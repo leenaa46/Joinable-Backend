@@ -64,6 +64,9 @@ class BaseService
             case 'current':
                 $query->orderByDesc('updated_at');
                 break;
+            case 'early_schedule':
+                $query->orderBy('schedule');
+                break;
             default:
                 if (\request()->order_by) $query->orderByDesc(\request()->order_by);
                 break;

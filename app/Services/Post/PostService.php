@@ -36,6 +36,13 @@ class PostService extends BaseService
         // Hide post with post_content type from all users
         $posts->where('type', '!=', 'post_content');
 
+        // Hide created_by when type is feedback
+        if (\request()->type == 'feedback') $posts->select('id', 'title', 'body', 'created_at', 'updated_at')
+            ->with('feedback_statuses', function ($query) {
+                $query->orderByDesc('id');
+            });
+        else $posts->with('created_by');
+
         // Hide unpublished posts from app users.
         if (!\auth()->user()->hasRole(['admin'])) $posts->where('is_published', \true);
 
@@ -201,13 +208,16 @@ class PostService extends BaseService
      */
     public function createFeedback(Request $request)
     {
-        $request->merge(['type' => 'feedback']);
+        $request->merge([
+            'type' => 'feedback',
+            'is_published' => true
+        ]);
 
         $this->validateSaveFeedback($request);
 
         try {
             $post = $this->create($request);
-            $post->feedback_statuses()->attach($request->feedback_status_id);
+            $post->feedback_statuses()->sync($request->feedback_status_id);
 
             return $post->load('feedback_statuses');
         } catch (\Throwable $th) {
