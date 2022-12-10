@@ -2,7 +2,6 @@
 
 namespace App\Services\Post;
 
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Services\Post\Validations\PostValidate;
@@ -31,13 +30,13 @@ class PostService extends BaseService
     {
         $posts = $this->model->query()->activeCompany();
 
-        switch (request()->type) {
-            case 'company_content':
-                $posts->with(['image_title', 'post_contents']);
-                break;
-        }
+        // Hide post with post_content type from all users
+        $posts->where('type', '!=', 'post_content');
 
-        return $this->formatQuery($posts, ['title'], ['type']);
+        // Hide unpublished posts from app users.
+        if (!\auth()->user()->hasRole(['admin'])) $posts->where('is_published', \true);
+
+        return $this->formatQuery($posts, ['title'], ['type', 'is_published']);
     }
 
     /**
