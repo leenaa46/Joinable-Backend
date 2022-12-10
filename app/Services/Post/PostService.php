@@ -181,4 +181,16 @@ class PostService extends BaseService
     {
         return $post->personals()->syncWithoutDetaching(\auth()->user()->personal->id);
     }
+
+    /**
+     * Personal Cancel Event
+     * 
+     * @param Post $post
+     * 
+     * @return Post
+     */
+    public function personalCancelToJoinEvent(Post $post)
+    {
+        return $post->personals()->detach(\auth()->user()->personal->id);
+    }
 }
