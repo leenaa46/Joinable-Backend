@@ -19,4 +19,13 @@ trait PersonalValidate
             "image_profile" => "nullable|mimes:jpg,png,jpeg|max:20480"
         ]);
     }
+
+    public function validateVariable(Request $request)
+    {
+        $request->validate([
+            "action" => "required|in:add,remove",
+            "variables" => "required|array",
+            "variables.*" => "required|exists:variables,id,deleted_at,NULL",
+        ]);
+    }
 }

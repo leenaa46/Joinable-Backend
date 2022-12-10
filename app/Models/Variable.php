@@ -28,4 +28,14 @@ class Variable extends BaseModel
                 ->orWhere('company_id', \auth()->user()->company_id);
         });
     }
+
+    public function personals()
+    {
+        return $this->belongsToMany(Personal::class);
+    }
+
+    public function personals_active()
+    {
+        return $this->personals()->whereRelation('user', 'company_id', \auth()->user()->company_id);
+    }
 }

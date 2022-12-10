@@ -35,4 +35,10 @@ class PersonalController extends Controller
         $res = $this->service->getByModel(\auth()->user()->personal);
         return $this->success($res, __('success.get_data'));
     }
+
+    public function giveVariable(Request $request)
+    {
+        $res = $this->service->givePersonalVariables($request, \auth()->user()->personal);
+        return $this->success($res, __('success.save_data'));
+    }
 }

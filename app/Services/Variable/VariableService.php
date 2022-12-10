@@ -14,7 +14,7 @@ class VariableService extends BaseService
     use VariableValidate;
 
     protected $model;
-    protected static $COMMON_RELATIONSHIP = [];
+    protected static $COMMON_RELATIONSHIP = ['personals_active'];
 
     public function __construct(Variable $variable)
     {
@@ -28,7 +28,8 @@ class VariableService extends BaseService
      */
     public function all()
     {
-        $variables = $this->model->activeCompany();
+        $variables = $this->model->activeCompany()
+            ->withCount('personals_active');
 
         return $this->formatQuery($variables, ['name', 'description'], ['type', 'company_id']);
     }
@@ -76,6 +77,8 @@ class VariableService extends BaseService
      */
     public function getByModel(Variable $variable)
     {
-        return $variable->load(self::$COMMON_RELATIONSHIP);
+        return $variable
+            ->loadCount('personals_active')
+            ->load(self::$COMMON_RELATIONSHIP);
     }
 }

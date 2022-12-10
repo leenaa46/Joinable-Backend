@@ -43,6 +43,7 @@ Route::group(['middleware' => []], function () {
                 ],
                 function () {
                     Route::get('personal-info', [PersonalController::class, 'getMyInfo']);
+                    Route::post('personal-variable', [PersonalController::class, 'giveVariable']);
                 }
             );
         }

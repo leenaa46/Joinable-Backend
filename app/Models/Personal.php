@@ -23,6 +23,11 @@ class Personal extends BaseModel
         return $this->belongsTo(User::class);
     }
 
+    public function variables()
+    {
+        return $this->belongsToMany(Variable::class);
+    }
+
     public function activities()
     {
         return $this->belongsToMany(Variable::class)->where('type', 'activity');
