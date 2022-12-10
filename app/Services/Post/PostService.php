@@ -43,6 +43,18 @@ class PostService extends BaseService
             });
         else $posts->with('created_by');
 
+        // Get only posts with incoming schedule
+        if (\request()->scope_schedule) {
+            switch (\request()->scope_schedule) {
+                case 'incoming':
+                    $posts->where('schedule', '>=', \date('Y-m-d H:i:s'));
+                    break;
+                case 'past':
+                    $posts->where('schedule', '<', \date('Y-m-d H:i:s'));
+                    break;
+            }
+        }
+
         // Hide unpublished posts from app users.
         if (!\auth()->user()->hasRole(['admin'])) $posts->where('is_published', \true);
 
