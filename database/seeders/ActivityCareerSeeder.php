@@ -60,7 +60,7 @@ class ActivityCareerSeeder extends Seeder
 
             $this->addToModel($activity['image_logo'], $item, $item->image_logo_collection_name, $activity);
 
-            echo ("Seed Activity " . ($i + 1) . '/' . count($activities) . '\n');
+            echo ("Seed Activity " . ($i + 1) . '/' . count($activities) . "\n");
         }
 
         $careers = [

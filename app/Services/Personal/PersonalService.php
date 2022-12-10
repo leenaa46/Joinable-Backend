@@ -14,7 +14,7 @@ class PersonalService extends BaseService
     use PersonalValidate;
 
     protected $model;
-    protected static $COMMON_RELATIONSHIP = ['user.company', 'activities', 'careers'];
+    protected static $COMMON_RELATIONSHIP = ['user', 'activities', 'careers'];
 
     public function __construct(Personal $personal)
     {
@@ -28,7 +28,8 @@ class PersonalService extends BaseService
      */
     public function all()
     {
-        $personals = $this->model->query()->activeCompany();
+        $personals = $this->model->query()->activeCompany()
+            ->with(self::$COMMON_RELATIONSHIP);
 
         return $this->formatQuery($personals, ['name'], ['gender']);
     }

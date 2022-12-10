@@ -5,6 +5,7 @@ namespace App\Services\Auth;
 use Laravel\Passport\Passport;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use App\Services\Post\PostService;
 use App\Services\Personal\PersonalService;
 use App\Services\Company\CompanyService;
 use App\Services\BaseService;
@@ -136,6 +137,15 @@ class AuthService extends BaseService
 
             $request->merge(['role' => 'admin', 'company_id' => $company->id]);
             $user = $this->register($request, \false);
+
+            $postService = \resolve(PostService::class);
+
+            $postService->create(new Request([
+                "type" => "company_content",
+                "title" => 'default',
+                "body" => "default",
+                "created_by" => $user->id
+            ]));
 
             DB::commit();
 
