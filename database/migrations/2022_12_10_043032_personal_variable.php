@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('personal_has_variable', function (Blueprint $table) {
+        Schema::create('personal_variable', function (Blueprint $table) {
             $table->foreignId('personal_id')->references('id')->on('personals');
             $table->foreignId('variable_id')->references('id')->on('variables');
         });
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('personal_has_variable');
+        Schema::dropIfExists('personal_variable');
     }
 };

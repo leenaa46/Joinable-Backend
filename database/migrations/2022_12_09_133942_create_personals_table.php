@@ -17,10 +17,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->references('id')->on('users');
             $table->string('name');
-            $table->enum('gender', ['male', 'female', 'other']);
+            $table->enum('gender', ['male', 'female', 'other'])->nullable();
             $table->string('gender_description')->nullable();
-            $table->date('joined_at');
-            $table->longText('introduce_message');
+            $table->date('joined_at')->nullable();
+            $table->longText('introduce_message')->nullable();
 
             $table->timestamps();
             $table->softDeletes();

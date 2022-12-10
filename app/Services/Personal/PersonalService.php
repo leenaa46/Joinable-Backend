@@ -14,7 +14,7 @@ class PersonalService extends BaseService
     use PersonalValidate;
 
     protected $model;
-    protected static $COMMON_RELATIONSHIP = ['user.company'];
+    protected static $COMMON_RELATIONSHIP = ['user.company', 'activities', 'careers'];
 
     public function __construct(Personal $personal)
     {
@@ -36,9 +36,12 @@ class PersonalService extends BaseService
 
         try {
             $personal = $this->model->newInstance();
-            $personal->joinable_code = $this->getNewId();
+            $personal->user_id = $request->user_id;
             $personal->name = $request->name;
-            $personal->slogan = $request->slogan;
+            $personal->gender = $request->gender;
+            $personal->gender_description = $request->gender_description;
+            $personal->joined_at = $request->joined_at;
+            $personal->introduce_message = $request->introduce_message;
             $personal->save();
 
             if ($request->image_profile)
@@ -53,20 +56,6 @@ class PersonalService extends BaseService
     }
 
     /**
-     * Generate New Unique Joinable Id
-     * 
-     * @return string
-     */
-    public function getNewId()
-    {
-        $str = Str::random(7);
-
-        return $this->model->where('joinable_code', $str)->first()
-            ? $this->getNewId()
-            : $str;
-    }
-
-    /**
      * Get By Model
      * 
      * @param Personal $personal
@@ -76,19 +65,5 @@ class PersonalService extends BaseService
     public function getByModel(Personal $personal)
     {
         return $personal->load(self::$COMMON_RELATIONSHIP);
-    }
-
-    /**
-     * Get By Joinable Code
-     * 
-     * @param string $joinableCode
-     * 
-     * @return Personal
-     */
-    public function getByCode($joinableCode)
-    {
-        $personal = $this->model->where('joinable_code', $joinableCode)->firstOrFail();
-
-        return $personal;
     }
 }

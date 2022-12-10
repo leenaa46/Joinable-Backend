@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VariableController;
+use App\Http\Controllers\PersonalController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\AuthController;
 
@@ -35,6 +36,15 @@ Route::group(['middleware' => []], function () {
         ],
         function () {
             Route::apiResource('variable', VariableController::class)->except('update', 'destroy');
+
+            Route::group(
+                [
+                    'middleware' => 'role:employee'
+                ],
+                function () {
+                    Route::get('personal-info', [PersonalController::class, 'getMyInfo']);
+                }
+            );
         }
     );
 });

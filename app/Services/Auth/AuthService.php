@@ -5,6 +5,7 @@ namespace App\Services\Auth;
 use Laravel\Passport\Passport;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use App\Services\Personal\PersonalService;
 use App\Services\Company\CompanyService;
 use App\Services\BaseService;
 use App\Services\Auth\Validations\UserValidate;
@@ -162,6 +163,12 @@ class AuthService extends BaseService
         try {
             $request->merge(['role' => 'employee']);
             $user = $this->register($request, \false);
+
+            $personalService = \resolve(PersonalService::class);
+            $personalService->create(new Request([
+                'user_id' => $user->id,
+                "name" => $user->name ?: $user->email
+            ]));
 
             DB::commit();
 
