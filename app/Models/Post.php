@@ -20,6 +20,14 @@ class Post extends BaseModel
     }
 
     /**
+     * Scope hide the created_by field for feedback
+     */
+    public function scopeFeedback($query)
+    {
+        return $query->select('id', 'title', 'body', 'created_at', 'updated_at');
+    }
+
+    /**
      * Scope Post For Active Company
      */
     public function scopeActiveCompany($query)

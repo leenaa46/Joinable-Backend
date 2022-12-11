@@ -37,7 +37,7 @@ class PostService extends BaseService
         $posts->where('type', '!=', 'post_content');
 
         // Hide created_by when type is feedback
-        if (\request()->type == 'feedback') $posts->select('id', 'title', 'body', 'created_at', 'updated_at')
+        if (\request()->type == 'feedback') $posts->feedback()
             ->with('feedback_statuses', function ($query) {
                 $query->orderByDesc('id');
             });
@@ -139,6 +139,9 @@ class PostService extends BaseService
      */
     public function getByModel(Post $post)
     {
+        // Hide created_by field when post type is feedback
+        if ($post->type == 'feedback') $post = $this->model->where('id', $post->id)->feedback()->first();
+
         return $post->load(self::$COMMON_RELATIONSHIP)
             ->loadCount('personals');
     }

@@ -43,6 +43,7 @@ Route::group(['middleware' => []], function () {
             Route::delete('image/{uuid}', [ImageController::class, 'destroy']);
             Route::get('company-content', [PostController::class, 'getCompanyContent']);
             Route::get('post', [PostController::class, 'index']);
+            Route::get('post/{post}', [PostController::class, 'show']);
             Route::post('event', [PostController::class, 'createEvent']);
 
             Route::group(
