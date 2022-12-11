@@ -199,6 +199,8 @@ class AuthService extends BaseService
      */
     public function getByModel(User $user)
     {
+        if ($user->personal) $user->load('personal');
+
         return $user->load(self::$COMMON_RELATIONSHIP);
     }
 }
