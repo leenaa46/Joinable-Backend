@@ -96,4 +96,10 @@ class PostController extends Controller
         $res = $this->service->getByModel($post);
         return $this->success($res, __('success.get_data'));
     }
+
+    public function updateFeedback(Post $post)
+    {
+        $res = $this->service->updateFeedback(request(), $post);
+        return $this->success($res, __('success.save_data'));
+    }
 }

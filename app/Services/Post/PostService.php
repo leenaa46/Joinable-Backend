@@ -37,11 +37,15 @@ class PostService extends BaseService
         $posts->where('type', '!=', 'post_content');
 
         // Hide created_by when type is feedback
-        if (\request()->type == 'feedback') $posts->feedback()
-            ->with('feedback_statuses', function ($query) {
-                $query->orderByDesc('id');
-            });
-        else $posts->with('created_by');
+        if (\request()->type == 'feedback') {
+            $posts->feedback()
+                ->with('feedback_statuses', function ($query) {
+                    $query->orderByDesc('id');
+                });
+
+            if (\request()->scope_feedback == 'mine') $posts->where('created_by', \auth()->user()->id);
+            else $posts->whereRelation('feedback_statuses', 'name', '!=', 'Good job');
+        } else $posts->with('created_by');
 
         // Get only posts with incoming schedule
         if (\request()->scope_schedule) {
@@ -232,6 +236,27 @@ class PostService extends BaseService
 
         try {
             $post = $this->create($request);
+            $post->feedback_statuses()->sync($request->feedback_status_id);
+
+            return $post->load('feedback_statuses');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    /** 
+     * Update Feedback Status
+     * 
+     * @return Post
+     */
+    public function updateFeedback(Request $request, Post $post)
+    {
+        if ($post->type != 'feedback') \abort(404, __('fail.not_found'));
+        if ($post->created_by != \auth()->user()->id) \abort(404, __('fail.not_found'));
+
+        $this->validateSaveFeedback($request);
+
+        try {
             $post->feedback_statuses()->sync($request->feedback_status_id);
 
             return $post->load('feedback_statuses');
