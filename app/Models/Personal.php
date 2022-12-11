@@ -33,6 +33,8 @@ class Personal extends BaseModel
     public function getSameCareersAttribute()
     {
         $same = [];
+        if (!\auth()->user()) return $same;
+
         if (!\auth()->user()->hasRole('employee')) return $same;
 
         $friendCareers = $this->careers;
@@ -56,6 +58,8 @@ class Personal extends BaseModel
     public function getSameActivitiesAttribute()
     {
         $same = [];
+        if (!\auth()->user()) return $same;
+
         if (!\auth()->user()->hasRole('employee')) return $same;
 
         $friendActivities = $this->activities;

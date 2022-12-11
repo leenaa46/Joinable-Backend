@@ -6,6 +6,7 @@ namespace Database\Seeders;
 
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Testing\WithoutEvents;
 use Illuminate\Database\Seeder;
 use Carbon\Carbon;
 use App\Traits\ImageTrait;
@@ -18,7 +19,7 @@ use App\Models\Company;
 
 class DatabaseSeeder extends Seeder
 {
-    use ImageTrait;
+    use ImageTrait, WithoutEvents;
 
     /**
      * Seed the application's database.

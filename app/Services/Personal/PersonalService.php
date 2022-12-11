@@ -49,9 +49,9 @@ class PersonalService extends BaseService
                 case 'all':
                     $personals->where(function ($query) {
                         $query->whereHas('activities', function ($query) {
-                            $query->whereIn('id', \auth()->user()->personal->activities->pluck('id')->toArray());
+                            $query->whereIn('id', \auth()->user()->personal->activities()->get()->pluck('id')->toArray());
                         })->orWhereHas('careers', function ($query) {
-                            $query->whereIn('id', \auth()->user()->personal->careers->pluck('id')->toArray());
+                            $query->whereIn('id', \auth()->user()->personal->careers()->get()->pluck('id')->toArray());
                         });
                     });
                     break;
