@@ -39,6 +39,7 @@ Route::group(['middleware' => []], function () {
         function () {
             Route::apiResource('variable', VariableController::class)->except('update', 'destroy');
             Route::get('personal', [PersonalController::class, 'index']);
+            Route::get('personal/{personal}', [PersonalController::class, 'show']);
             Route::get('company', [CompanyController::class, 'getMyInfo']);
             Route::delete('image/{uuid}', [ImageController::class, 'destroy']);
             Route::get('company-content', [PostController::class, 'getCompanyContent']);
