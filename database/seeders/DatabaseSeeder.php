@@ -72,6 +72,8 @@ class DatabaseSeeder extends Seeder
                     "name" => "emp_$company->id$e",
                     "user_id" => $user->id
                 ]);
+                if ($e < 3) $this->addToModel("https://source.unsplash.com/random/400x400/?brand", $personal, $personal->image_profile_collection_name);
+
                 $personalIds[] = $personal->id;
 
                 $career = Variable::where('type', 'career')->inRandomOrder()->first();
